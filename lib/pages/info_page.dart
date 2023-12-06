@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teste_desenvolvedor_flutter/utils/white_card.dart';
 
 class InfoPage extends StatefulWidget {
   const InfoPage({super.key});
@@ -8,6 +9,7 @@ class InfoPage extends StatefulWidget {
 }
 
 class _InfoPageState extends State<InfoPage> {
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +26,31 @@ class _InfoPageState extends State<InfoPage> {
             end: Alignment.bottomCenter,
           ),
         ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+              child: Column(
+                children: [
+                  WhiteCard(child: _buildCard()),
+                  WhiteCard(child: _buildTexto())
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Card _buildCard() {
+    return Card(
+        //child: ListView(),
+        );
+  }
+
+  TextFormField _buildTexto() {
+    return TextFormField();
   }
 }

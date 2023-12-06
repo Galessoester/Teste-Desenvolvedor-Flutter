@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:teste_desenvolvedor_flutter/utils/white_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:teste_desenvolvedor_flutter/pages/info_page.dart';
 
@@ -79,19 +80,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(.1),
-                spreadRadius: 2,
-                blurRadius: 7,
-              ),
-            ],
-          ),
+        WhiteCard(
           child: TextFormField(
             controller: loginController,
             validator: (usuario) {
@@ -135,19 +124,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(.1),
-                spreadRadius: 2,
-                blurRadius: 7,
-              ),
-            ],
-          ),
+        WhiteCard(
           child: TextFormField(
             controller: senhaController,
             validator: (senha) {
@@ -217,9 +194,6 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () async {
           final isValid = _formKey.currentState!.validate();
           if (isValid) {
-            final login = loginController.text;
-            final senha = senhaController.text;
-            print('$login , $senha');
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const InfoPage(),
