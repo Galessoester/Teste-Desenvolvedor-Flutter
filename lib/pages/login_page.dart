@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:teste_desenvolvedor_flutter/pages/info_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,8 +11,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  final senhaController = TextEditingController();
+  final loginController = TextEditingController();
+
   bool isLoading = false;
   String? errorMessage;
+  bool obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +42,20 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
               child: Column(
                 children: [
-                  _buildLogin(),
-                  const SizedBox(height: 10),
-                  _buildSenha(),
-                  const SizedBox(height: 10),
-                  _buildBotao(),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        _buildLogin(),
+                        const SizedBox(height: 10),
+                        _buildSenha(),
+                        const SizedBox(height: 40),
+                        _buildBotao(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 100),
+                  _buildPoliticaPrivacidade(),
                 ],
               ),
             ),
@@ -56,17 +72,17 @@ class _LoginPageState extends State<LoginPage> {
         const Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            'Usuário', // Seu rótulo
+            'Usuário',
             style: TextStyle(
-              color: Colors.white, // Cor do rótulo
-              fontSize: 18, // Tamanho do rótulo
+              color: Colors.white,
+              fontSize: 18,
             ),
           ),
         ),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
             color: Colors.white,
             boxShadow: [
               BoxShadow(
@@ -76,9 +92,22 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
-          child: TextField(
+          child: TextFormField(
+            controller: loginController,
+            validator: (usuario) {
+              if (usuario == null || usuario.isEmpty) {
+                return "Por favor, digite o nome do usuário.";
+              }
+              if (usuario.length > 20) {
+                return "O nome do usuário deve ter menos de 20 caracteres.";
+              }
+              if (usuario.endsWith(' ')) {
+                return "O nome do usuário não pode terminar com espaços em branco.";
+              }
+              return null;
+            },
             onChanged: (value) {},
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.black),
             decoration: const InputDecoration(
               prefixIcon: Icon(
                 Icons.person,
@@ -99,17 +128,17 @@ class _LoginPageState extends State<LoginPage> {
         const Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            'Senha', // Seu rótulo
+            'Senha',
             style: TextStyle(
-              color: Colors.white, // Cor do rótulo
-              fontSize: 18, // Tamanho do rótulo
+              color: Colors.white,
+              fontSize: 18,
             ),
           ),
         ),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
             color: Colors.white,
             boxShadow: [
               BoxShadow(
@@ -119,46 +148,111 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
-          child: TextField(
+          child: TextFormField(
+            controller: senhaController,
+            validator: (senha) {
+              if (senha == null || senha.isEmpty) {
+                return "Por favor, digite sua senha.";
+              }
+              if (senha.length < 2 || senha.length > 20) {
+                return "A senha deve ter mais de 2 e menos de 20 caracteres.";
+              }
+              if (!isPasswordValid(senha)) {
+                return "A senha não deve conter caracteres especiais.";
+              }
+              if (senha.endsWith(' ')) {
+                return "A senha não pode terminar com espaços em branco.";
+              }
+              return null;
+            },
+            obscureText: obscureText,
             onChanged: (value) {},
-            style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              prefixIcon: Icon(
+            style: const TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                icon: obscureText
+                    ? const Icon(Icons.visibility_outlined)
+                    : const Icon(Icons.visibility_off_outlined),
+                onPressed: () {
+                  setState(() {
+                    obscureText = !obscureText;
+                  });
+                },
+              ),
+              prefixIcon: const Icon(
                 Icons.lock,
                 color: Color(0xFF212835),
               ),
               border: InputBorder.none,
             ),
           ),
-        )
+        ),
       ],
     );
   }
 
-  MaterialButton _buildBotao() {
-    return MaterialButton(
-      padding: const EdgeInsets.all(20),
-      color: const Color(0xFF40b167),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-      child: Align(
-        child: isLoading
-            ? const CircularProgressIndicator(
-                backgroundColor: Colors.white,
-                strokeWidth: 2,
-              )
-            : const Text(
-                'Entrar',
-                style: TextStyle(color: Colors.white, fontSize: 18),
+  bool isPasswordValid(String password) {
+    RegExp regex = RegExp(r'^[a-zA-Z0-9 ]+$');
+    return regex.hasMatch(password);
+  }
+
+  SizedBox _buildBotao() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.5,
+      child: MaterialButton(
+        padding: const EdgeInsets.all(20),
+        color: const Color(0xFF40b167),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        child: Align(
+          child: isLoading
+              ? const CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                  strokeWidth: 2,
+                )
+              : const Text(
+                  'Entrar',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+        ),
+        onPressed: () async {
+          final isValid = _formKey.currentState!.validate();
+          if (isValid) {
+            final login = loginController.text;
+            final senha = senhaController.text;
+            print('$login , $senha');
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const InfoPage(),
               ),
+            );
+          }
+        },
       ),
-      onPressed: () async {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => InfoPage(),
-          ),
-        );
-        //}
-      },
     );
+  }
+
+  RichText _buildPoliticaPrivacidade() {
+    return RichText(
+      text: TextSpan(
+        text: 'Política de Privacidade',
+        style: const TextStyle(
+          color: Colors.white,
+          decoration: TextDecoration.underline,
+        ),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            _launchURL('https://www.google.com.br');
+          },
+      ),
+    );
+  }
+
+  void _launchURL(String url) async {
+    Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
