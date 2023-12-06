@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
-import 'package:teste_desenvolvedor_flutter/utils/white_card.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:teste_desenvolvedor_flutter/models/politica_de_privacidade.dart';
+import 'package:teste_desenvolvedor_flutter/models/white_card.dart';
 import 'package:teste_desenvolvedor_flutter/pages/info_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -56,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 100),
-                  _buildPoliticaPrivacidade(),
+                  const PoliticaPrivacidade(),
                 ],
               ),
             ),
@@ -203,30 +202,5 @@ class _LoginPageState extends State<LoginPage> {
         },
       ),
     );
-  }
-
-  RichText _buildPoliticaPrivacidade() {
-    return RichText(
-      text: TextSpan(
-        text: 'Política de Privacidade',
-        style: const TextStyle(
-          color: Colors.white,
-          decoration: TextDecoration.underline,
-        ),
-        recognizer: TapGestureRecognizer()
-          ..onTap = () {
-            _launchURL('https://www.google.com.br');
-          },
-      ),
-    );
-  }
-
-  void _launchURL(String url) async {
-    Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 }

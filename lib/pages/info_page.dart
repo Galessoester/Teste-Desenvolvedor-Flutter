@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:teste_desenvolvedor_flutter/utils/white_card.dart';
+import 'package:teste_desenvolvedor_flutter/models/politica_de_privacidade.dart';
+import 'package:teste_desenvolvedor_flutter/models/white_card.dart';
 
 class InfoPage extends StatefulWidget {
   const InfoPage({super.key});
@@ -9,7 +10,6 @@ class InfoPage extends StatefulWidget {
 }
 
 class _InfoPageState extends State<InfoPage> {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +34,9 @@ class _InfoPageState extends State<InfoPage> {
               child: Column(
                 children: [
                   WhiteCard(child: _buildCard()),
-                  WhiteCard(child: _buildTexto())
+                  WhiteCard(child: _buildTexto()),
+                  const SizedBox(height: 100),
+                  const PoliticaPrivacidade(),
                 ],
               ),
             ),
@@ -51,6 +53,11 @@ class _InfoPageState extends State<InfoPage> {
   }
 
   TextFormField _buildTexto() {
-    return TextFormField();
+    return TextFormField(
+      decoration: const InputDecoration(
+        hintText: 'Digite seu Texto',
+        border: InputBorder.none,
+      ),
+    );
   }
 }
